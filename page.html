@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>分页模拟</title>
+	<style type="text/css">
+		.pagination {
+		  display: inline-block;
+		  padding-left: 0;
+		  margin: 20px 0;
+		  border-radius: 4px;
+		  font-size: 16px;
+		}
+		.pagination > li {
+		  display: inline;
+		}
+		
+		.pagination > li > span {
+		  position: relative;
+		  float: left;
+		  padding: 6px 12px;
+		  margin-left: -1px;
+		  line-height: 1.42857143;
+		  color: #a6a6a6;
+		  background-color: #fff;
+		  cursor: pointer;
+		}
+		
+		.pagination > .active > span,
+		
+		.pagination > .active > span:hover,
+	
+		.pagination > .active > span:focus {
+		  z-index: 2;
+		  color: #a6a6a6;
+		  cursor: pointer;
+		  border-bottom: 2px solid #ffd852;
+		}
+		.pagination > .disabled > span{
+		  cursor: default;
+		  background-color: #fff;
+		  border-color: #ddd;
+		  color: #cfcfcf;
+		}
+		.content{
+			width: 815px;
+		}
+		.search_num{
+			display: inline-block;
+			float: right;
+			height: 34px;
+			line-height: 34px;
+		}
+		.search_num input{
+			width: 35px;
+			height: 25px;
+		}
+		.episode_find{
+			display: inline-block;
+			vertical-align: middle;
+			background: url(find.png) no-repeat;
+			width: 16px;
+			height: 16px;
+		}
+	</style>
+</head>
+<body>
+<div style="width: 815px;">
+	<div class="content">
+		<ul class="pagination">
+			<li class="first "><span><<</span></li>
+			<li class="prev"><span><</span></li>
+			<li class="next"><span>></span></li>
+			<li class="last"><span>>></span></li>
+		</ul>
+		<div class="search_num">
+			第 <input type="text" value="" class="episode"> 集
+			<i class="episode_find">&nbsp;</i>
+		</div>
+	</div>
+</div>
+<div class="summary"> </div>
+	<script type="text/javascript" src="jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="page.js"></script>
+	<script type="text/javascript">
+	var pages = [1,0,1,1,0,1,0,0,1,1,1,1,0,1,1];
+	$.jqPage('.pagination',pages);
+	$('.episode_find').click(function () {
+		var parent = $(this).parent().parent();
+		var range = parent.find('input').val();
+		var start = $('.page').first().data('num');
+    	var end = $('.page').last().data('num');
+		var decimal =range / 5; 
+		if (decimal == Math.floor(decimal)) {
+			decimal = decimal - 1;
+		}else{
+			decimal = Math.floor(decimal);
+		}
+		if (decimal < pages.length && pages[decimal] == 0) { //存在数组范围内,但是没有内容
+			$('.summary').text('无');
+		}else if(decimal >= pages.length){ //搜索超过最大集数
+			$('.summary').text('搜索超过最大集数');
+		}else if(decimal >= start && decimal <= end){  //搜索的集数在显示的集数里面
+			$('.page').removeClass('active');
+			$('[data-num='+decimal+']').addClass('active');
+		}else{
+			$('.page').remove();
+			$.jqPage('.pagination',pages,decimal);
+		}
+	});
+	</script>
+</body>
+</html>
